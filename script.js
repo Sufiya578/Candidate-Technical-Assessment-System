@@ -24,7 +24,7 @@ const questions = {
   "C++": [
     { question: "C++ is an extension of which language?", options: ["C", "Java", "Python", "C#"], correctAnswer: 0 },
     { question: "Which keyword is used to inherit a class?", options: ["public", "protected", "private", ":"], correctAnswer: 3 },
-    { question: "Which operator is used for scope resolution?", options: ["::", ":", ".", "->"], correctAnswer: 0 },
+    { question: "Which operator is used for scope resolution?", options: ["::", ":", ".", "=>"], correctAnswer: 0 },
     { question: "What is the size of int in C++ (typically)?", options: ["2 bytes", "4 bytes", "8 bytes", "Depends on OS"], correctAnswer: 1 },
     { question: "Which is used to handle exceptions?", options: ["try-catch", "if-else", "switch", "for"], correctAnswer: 0 }
   ],
