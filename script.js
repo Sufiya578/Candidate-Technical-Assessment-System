@@ -20,28 +20,8 @@ const questions = {
     { question: "Which is not a Java access modifier?", options: ["public", "private", "protected", "friendly"], correctAnswer: 3 },
     { question: "Java is:", options: ["Platform independent", "Platform dependent", "Both", "None"], correctAnswer: 0 },
     { question: "Which method is the entry point of a Java program?", options: ["main()", "start()", "init()", "run()"], correctAnswer: 0 }
-  ],
-  "C++": [
-    { question: "C++ is an extension of which language?", options: ["C", "Java", "Python", "C#"], correctAnswer: 0 },
-    { question: "Which keyword is used to inherit a class?", options: ["public", "protected", "private", ":"], correctAnswer: 3 },
-    { question: "Which operator is used for scope resolution?", options: ["::", ":", ".", "=>"], correctAnswer: 0 },
-    { question: "What is the size of int in C++ (typically)?", options: ["2 bytes", "4 bytes", "8 bytes", "Depends on OS"], correctAnswer: 1 },
-    { question: "Which is used to handle exceptions?", options: ["try-catch", "if-else", "switch", "for"], correctAnswer: 0 }
-  ],
-  "HTML": [
-    { question: "HTML stands for?", options: ["Hyper Text Markup Language", "High Text Markup Language", "Hyperlinks Text Mark Language", "None"], correctAnswer: 0 },
-    { question: "Which tag is used for links?", options: ["<a>", "<link>", "<href>", "<url>"], correctAnswer: 0 },
-    { question: "Which attribute specifies an image source?", options: ["src", "href", "link", "img"], correctAnswer: 0 },
-    { question: "HTML comments start with?", options: ["<!--", "//", "/*", "#"], correctAnswer: 0 },
-    { question: "The <title> tag is placed in?", options: ["<head>", "<body>", "<footer>", "<html>"], correctAnswer: 0 }
-  ],
-  "CSS": [
-    { question: "CSS stands for?", options: ["Cascading Style Sheets", "Creative Style Sheets", "Colorful Style Sheets", "Computer Style Sheets"], correctAnswer: 0 },
-    { question: "Which property changes text color?", options: ["color", "font-color", "text-color", "background-color"], correctAnswer: 0 },
-    { question: "Which property controls spacing between lines?", options: ["line-height", "spacing", "margin", "padding"], correctAnswer: 0 },
-    { question: "How do you select an element by id?", options: ["#id", ".id", "id", "*id"], correctAnswer: 0 },
-    { question: "Which property adds space inside an element?", options: ["padding", "margin", "border", "spacing"], correctAnswer: 0 }
   ]
+
 };
 
 let selectedLanguages = [];
@@ -50,7 +30,7 @@ let currentQuestionIndex = 0;
 let userAnswers = [];
 
 // Toast helper
-function showToast(message, icon='warning') {
+function showToast(message, icon = 'warning') {
   Swal.fire({
     toast: true,
     position: 'top-end',
@@ -91,7 +71,7 @@ function startTest() {
   document.getElementById("quizSection").classList.remove("d-none");
 
   currentQuestionIndex = 0;
-  userAnswers = new Array(quizQuestions.length).fill(undefined); // Initialize answers
+  userAnswers = new Array(quizQuestions.length).fill(undefined);
   showQuestion();
 }
 
@@ -100,13 +80,16 @@ function showQuestion() {
   const q = quizQuestions[currentQuestionIndex];
   document.getElementById("questionText").innerText = q.question;
 
-  // Generate options
+  const optionsContainer = document.getElementById("optionsContainer");
+  optionsContainer.innerHTML = ''; // Clear previous options
+
   const optionsHTML = q.options.map((opt, i) => `
     <li class="option-item" data-value="${i}" onclick="selectOption(${i})">
       ${opt}
     </li>
-  `).join("");
-  document.getElementById("optionsContainer").innerHTML = optionsHTML;
+  `).join('');
+
+  optionsContainer.insertAdjacentHTML('beforeend', optionsHTML);
 
   // Highlight selected answer
   const selected = userAnswers[currentQuestionIndex];
@@ -122,26 +105,24 @@ function showQuestion() {
   // Update question number
   document.getElementById("questionNumber").innerText = currentQuestionIndex + 1;
 
-  // Show/hide submit and next buttons
+  // Show/hide buttons
   const submitBtn = document.getElementById("submitBtn");
-  const nextBtn = document.getElementById("nextBtn"); // make sure your Next button has id="nextBtn"
-  
+  const nextBtn = document.getElementById("nextBtn");
+
   if (currentQuestionIndex === quizQuestions.length - 1) {
-    submitBtn.style.display = "inline-block"; // show submit
-    nextBtn.style.display = "none";           // hide next
+    submitBtn.style.display = "inline-block";
+    nextBtn.style.display = "none";
   } else {
-    submitBtn.style.display = "none";         // hide submit
-    nextBtn.style.display = "inline-block";   // show next
+    submitBtn.style.display = "none";
+    nextBtn.style.display = "inline-block";
   }
 }
 
 // Select answer
 function selectOption(index) {
-  // Remove previous selection
   document.querySelectorAll('.option-item').forEach(item => item.classList.remove('selected'));
-  // Add new selection
-  document.querySelector(`.option-item[data-value="${index}"]`).classList.add('selected');
-  // Save answer
+  const selectedEl = document.querySelector(`.option-item[data-value="${index}"]`);
+  if (selectedEl) selectedEl.classList.add('selected');
   userAnswers[currentQuestionIndex] = index;
 }
 
@@ -186,7 +167,6 @@ function submitTest() {
   document.getElementById("scoreValue").innerText = `${correct} / ${total}`;
   document.getElementById("scorePercent").innerText = `(${percentage}%)`;
 
-  // Threshold: 50%
   if (percentage >= 50) {
     document.getElementById("successMsg").classList.remove("d-none");
     document.getElementById("resumeUpload").classList.remove("d-none");
@@ -195,7 +175,7 @@ function submitTest() {
   }
 }
 
-
+// Upload resume
 function uploadResume() {
   const fileInput = document.getElementById('resumeFile');
   if (!fileInput.files.length) {
@@ -204,10 +184,12 @@ function uploadResume() {
   }
 
   const file = fileInput.files[0];
-  const allowedTypes = ['application/pdf', 
-                        'application/msword', 
-                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document']; // PDF, DOC, DOCX
-  const maxSizeMB = 4; // Maximum file size in MB
+  const allowedTypes = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+  ];
+  const maxSizeMB = 4;
 
   if (!allowedTypes.includes(file.type)) {
     showToast("Invalid file type! Only PDF, DOC, or DOCX allowed.");
@@ -222,19 +204,16 @@ function uploadResume() {
   showToast("Resume uploaded successfully!", 'success');
 }
 
-
 // Reset Assessment
 function resetAssessment() {
   document.getElementById("resultSection").classList.add("d-none");
   document.getElementById("languageSection").classList.remove("d-none");
 
-  // Reset variables
   selectedLanguages = [];
   quizQuestions = [];
   currentQuestionIndex = 0;
   userAnswers = [];
 
-  // Reset UI
   document.querySelectorAll('.language-card').forEach(card => {
     const cb = card.querySelector('input[type="checkbox"]');
     cb.checked = false;
